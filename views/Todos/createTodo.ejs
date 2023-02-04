@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToDo List</title>
+</head>
+<body>
+    <h1>Create a todo</h1>
+    <form>
+        <label for="token">Bearer Token</label>
+        <input type="text" id="token"/>
+
+        <label for="action">Action</label>
+        <input type="text" id="action"/>
+
+        <button type="submit">Create</button>
+    </form>
+
+    <footer>
+        <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
+        <script>
+            const formDOM = document.querySelector('form')
+            formDOM.addEventListener('submit', async (e) => {
+                e.preventDefault()
+                const token = document.getElementById('token').value
+                const action = document.getElementById('action').value
+                // console.log(name, email, password)
+                try {
+                    const res = await axios.post('/api/v1/todos', {
+                        token, action
+                    })
+                    // console.log(res.data.todo)
+                    formDOM.style.display = 'none';
+                    document.body.append(`
+                        Action: ${res.data.todo.action}
+                        Status: ${res.data.todo.status}
+                    `)
+                } catch (error) {
+                    document.body.append(`
+                        Error: ${error}
+                    `)
+                }
+            })
+        </script>
+    </footer>
+    
+</body>
+</html>

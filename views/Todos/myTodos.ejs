@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToDo List</title>
+</head>
+<body>
+    <h1>My Todos</h1>
+    <form>
+        <label for="token">Bearer Token</label>
+        <input type="text" id="token"/>
+
+        <button type="submit">GET</button>
+    </form>
+    <div id="todos"></div>
+    <footer>
+        <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
+        <script>
+            async function changeStatus(btn){
+                id = btn.parentElement.id
+                const token = document.getElementById('token').value
+                // console.log('token: ', token)
+                try {
+                    const {data} = await axios.patch(`/api/v1/todos/${id}`, {
+                        headers: {
+                            authorization: token
+                        }
+                    })
+                    // console.log(data)
+                    btn.parentElement.getElementsByClassName('status')[0].innerText = `Status: ${data.todo.status}`
+
+                } catch(err) {
+                    console.error(err)
+                }
+            }
+            const formDOM = document.querySelector('form')
+            const todosDOM = document.querySelector('#todos')
+            formDOM.addEventListener('submit', async (e) => {
+                e.preventDefault()
+                const token = document.getElementById('token').value
+                // console.log(name, email, password)
+                try {
+                    const {data} = await axios.get('/api/v1/todos', {
+                        headers: {
+                            Authorization: token
+                        }
+                    })
+                    // console.log(data)
+                    todosDOM.innerHTML = ''
+                    todosDOM.innerHTML = data.todos.map(todo => 
+                        `
+                            <div id="${todo._id}"> <span>Action: ${todo.action}</span> <span class="status">Status: ${todo.status}</span> <button onclick="changeStatus(this)"> Change Status </button> </div>
+                        `
+                    )
+                    .join('')
+                } catch (error) {
+                    document.body.append(`
+                        Error: ${error}
+                    `)
+                }
+            })
+        </script>
+    </footer>
+</body>
+</html>
