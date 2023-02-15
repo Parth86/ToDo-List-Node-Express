@@ -8,6 +8,9 @@
     "start": "node app.js",
     "dev": "nodemon app.js"
   },
+  "engines": {
+    "node": "14.x"
+  },
   "author": "Parth Tejpal",
   "license": "ISC",
   "dependencies": {
